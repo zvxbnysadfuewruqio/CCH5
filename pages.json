@@ -1,0 +1,47 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+			{
+			"path" : "pages/login/login",
+			"style" : {
+				"navigationBarTitleText": "",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"bounce": "none",
+					"titleNView": false
+				}
+			}
+    },
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "数据报表"
+			}
+		}
+        ,{
+            "path" : "pages/satisfaction/satisfaction",
+            "style" : {}
+        }
+    ],
+	"tabBar": {
+		"color": "#7a7e83",
+		"selectedColor": "#31C45C",
+		"backgroundColor": "#ffffff",
+		"list": [{
+			"pagePath": "pages/index/index",
+			"text": "首页",
+			"iconPath": "static/img/index01.png",
+			"selectedIconPath": "static/img/index02.png"
+		},{
+			"pagePath": "pages/satisfaction/satisfaction",
+			"text": "社区",
+			"iconPath": "static/img/shequ01.png",
+			"selectedIconPath": "static/img/shequ02.png"
+		}]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "数据报表",
+		"navigationBarBackgroundColor": "#fff",
+		"backgroundColor": "#ffffff"
+	}
+}

@@ -14,13 +14,14 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "数据报表"
+				"navigationBarTitleText": "商户统计"
 			}
-		}
-        ,{
-            "path" : "pages/satisfaction/satisfaction",
-            "style" : {}
-        }
+		},{
+			"path" : "pages/satisfaction/satisfaction",
+			"style" : {
+				"navigationBarTitleText": "满意度统计"
+			}
+    }
     ],
 	"tabBar": {
 		"color": "#7a7e83",
@@ -28,12 +29,12 @@
 		"backgroundColor": "#ffffff",
 		"list": [{
 			"pagePath": "pages/index/index",
-			"text": "首页",
+			"text": "商户统计",
 			"iconPath": "static/img/index01.png",
 			"selectedIconPath": "static/img/index02.png"
 		},{
 			"pagePath": "pages/satisfaction/satisfaction",
-			"text": "社区",
+			"text": "满意度统计",
 			"iconPath": "static/img/shequ01.png",
 			"selectedIconPath": "static/img/shequ02.png"
 		}]

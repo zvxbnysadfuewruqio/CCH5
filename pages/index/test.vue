@@ -1,202 +1,134 @@
 <template>
-	<!-- 商户统计 -->
-	<view class="index">
-		<!-- 入驻商户总数 -->
-		<view class="total">
-			<view class="title">入驻商户总数</view>
-			<view class="bottom">
-				<view class="text1">9745</view>
-				<view class="text2">
-					<text>家</text>
-				</view>
-			</view>
-		</view>
-		
+	<view class="satisfaction">
 		<!-- 近7天入驻商户 -->
 		<view class="seven">
-			<view class="title">近7天入驻商户</view>
+			<view class="title">客户订单统计</view>
 			<view class="ss">
-				<canvas canvas-id="canvasColumn" id="canvasColumn" class="charts"></canvas>
+				<!-- @touchstart="touchPie" -->
+				<canvas canvas-id="canvasRing" id="canvasRing" class="charts" @touchstart="touchRing"></canvas>
 			</view>
 		</view>
+			
 	</view>
 </template>
 
 <script>
-	import uCharts from '../../components/u-charts/u-charts.js';
+	import uCharts from '@/components/u-charts/u-charts.js';
+	var _self;
+	var canvaRing=null;
+   
 	export default {
 		data() {
 			return {
-				canvaColumn:{},
-				serverData:[],
-				chartsdata:{
-						"categories": ["2013", "2014", "2015", "2016", "2017", "2018"],
-						"series": [{
-						"name": "目标值",
-						"data": [600,600,600,600,600,600,600],
-						"color": "#F5F5F5"
-						}, {
-						"name": "完成量",
-						"data": [18,  27 , 21, 24, 6, 28],
-						"color": "#1890ff"
-						}]
-				},
-				data:{
-					"categories": ["2013", "2014", "2015", "2016", "2017", "2018"],
-					"series": [{
-					"name": "类别一",
-					"data": [35, 36, 31, 33, 13, 34]
-					}, {
-					"name": "类别二",
-					"data": [18, 27, 21, 24, 6, 28]
-					}, {
-					"name": "类别三",
-					"data": [18, 27, 21, 24, 6, 28]
-					}]
+				serverData:'',
+				"chartData": {
+				  "series": [{
+					"name": "一班",
+					"data": 50
+				  }, {
+					"name": "二班",
+					"data": 30
+				  }, {
+					"name": "三班",
+					"data": 20
+				  }, {
+					"name": "四班",
+					"data": 18
+				  }, {
+					"name": "五班",
+					"data": 8
+				  }]
 				}
 			}
 		},
 		onLoad() {
+			_self = this;
+			
 			// this.getServerData();
-			this.showColumn("canvasColumn",this.data)
+			_self.showRing("canvasRing",this.chartData);
 		},
 		methods: {
-			//获取数据
 			// getServerData(){
-			// 	var _self=this
 			// 	uni.request({
-			// 		url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata2',
+			// 		url: 'https://www.ucharts.cn/data.json',
 			// 		data:{
 			// 		},
 			// 		success: function(res) {
 			// 			console.log(res.data.data)
-						
-			// 			_self.showColumn("canvasColumn",Column);
+			// 			let Ring={series:[]};
+			// 			//这里我后台返回的是数组，所以用等于，如果您后台返回的是单条数据，需要push进去
+			// 			Ring.series=res.data.data.Ring.series;
+			// 			_self.showRing("canvasRing",Ring);
 			// 		},
 			// 		fail: () => {
-			// 			console.log("网络错误，小程序端请检查合法域名");
+			// 			_self.tips="网络错误，小程序端请检查合法域名";
 			// 		},
 			// 	});
 			// },
-			showColumn(canvasId,chartData){
-				var _self=this
-				var cWidth=uni.upx2px(700)
-				var cHeight=uni.upx2px(500)
-			// 	this.canvaColumn=new uCharts({
-			// 	$this: _self,
-			// 	canvasId: canvasId,
-			// 	type: 'column',
-			// 	legend: {show:true},
-			// 	fontSize: 11,
-			// 	background: '#FFFFFF',
-			// 	pixelRatio: 1,
-			// 	animation: true,
-			// 	categories: chartData.categories,
-			// 	series: chartData.series,
-			// 	xAxis: {
-			// 		disableGrid: true,
-			// 	},
-			// 	yAxis: {
-			// 		// disabled:true
-			// 		disableGrid: true,
-			// 	},
-			// 	dataLabel: true,
-			// 	width: uni.upx2px(700),
-			// 	height:uni.upx2px(500),
-			// 	extra: {
-			// 		column: {
-			// 			//meter参数为“温度计式图表”
-			// 			type: 'meter',
-			// 			//width为每个柱子的宽度
-			// 			width: 20,
-			// 			meter: {
-			// 				//这个是外层边框（即目标值）的宽度
-			// 				border: 2,
-			// 				//这个是内部填充颜色
-			// 				fillColor: '#F5F5F5'
-			// 			}
-			// 		}
-			// 	}
-			// });
-			
-				this.canvaColumn=new uCharts({
-					$this:this,
+			showRing(canvasId,chartData){
+				var cWidth=uni.upx2px(700);
+				var cHeight=uni.upx2px(480);
+				canvaRing=new uCharts({
+					$this:_self,
 					canvasId: canvasId,
-					type: 'column',
-					legend:{show:true},
+					type: 'ring',
 					fontSize:11,
+					legend:true,
+					title: {
+						name: '70%',
+						color: '#7cb5ec',
+						fontSize: 25,
+						offsetY:-20,
+					},
+					subtitle: {
+						name: '收益率',
+						color: '#666666',
+						fontSize: 15,
+						offsetY:30,
+					},
+					extra: {
+						pie: {
+						  offsetAngle: -45,
+						  ringWidth: 40,
+						  labelWidth:15
+						}
+					},
 					background:'#FFFFFF',
 					pixelRatio:1,
-					animation: true,
-					categories: chartData.categories,
 					series: chartData.series,
-					xAxis: {
-						disableGrid:true,
-					},
-					yAxis: {
-						//disabled:true
-					},
-					dataLabel: true,
-					width:cWidth,
+					animation: true,
+					width: cWidth,
 					height:cHeight,
-					extra: {
-						column: {
-							type:'stack',
-							width: 20
-						}
-						}
+					disablePieStroke: true,
+					dataLabel: true,
 				});
 			},
-			changeData(){
-				this.canvaColumn.updateData({
-					series: _self.serverData.ColumnB.series,
-					categories: _self.serverData.ColumnB.categories
+			touchRing(e){
+				canvaRing.showToolTip(e, {
+					format: function (item) {
+						return item.name + ':' + item.data 
+					}
 				});
-			}
+			},
 		}
 	}
 </script>
 
 <style lang="scss">
+// page{background:#F2F2F2;width: 750upx;overflow-x: hidden;}
 page{
 	background-color: #f5f5f5;
 }
-.index{
+.satisfaction{
 	padding: 20rpx 25rpx;
-	.total{
-		width: 700rpx;
-		height: 200rpx;
-		color: #fff;
-		padding-left: 40rpx;
-		background-image: url(../../static/img/totalbg.png);
-		background-size: 100%;
-		.title{
-			padding-top: 20rpx;
-			padding-bottom: 10rpx;
-			font-size: 26rpx;
-			line-height:70rpx;
-		}
-		.bottom{
-			display: flex;
-		}
-		.text1{
-			font-size: 68rpx;
-			line-height:70rpx;
-		}
-		.text2{
-			margin-left: 10rpx;
-			position: relative;
-			font-size: 26rpx;
-			text{
-				position: absolute;
-				left: 0;
-				bottom: 5rpx;
-			}
-		}
+	.title{
+		color: #141414;
+		font-size: 42rpx;
+		font-weight: bold;
+		padding: 45rpx 0;
 	}
 	
-	
-	.charts{width: 700upx; height:500upx;background-color: #FFFFFF;}
+	.charts{width: 700upx; height:660upx;background-color: #FFFFFF;}
 	
 }
 </style>

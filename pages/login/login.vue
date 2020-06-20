@@ -8,9 +8,11 @@
 			<!-- 登录框 -->
 			<view class="input-content">
 				<view class="input-item">
-					<view class="input-name yticon icon-shoucang"></view>
+					<view class="input-name">
+						<image src="../../static/img/username.png"></image>
+					</view>
 					<input
-						type="number" 
+						type="text" 
 						:value="username" 
 						placeholder="请输入帐号"
 						placeholder-class="input-class"
@@ -20,7 +22,9 @@
 					/>
 				</view>
 				<view class="input-item">
-					<view class="input-mima yticon icon-shoucang"></view>
+					<view class="input-name">
+						<image src="../../static/img/possword.png"></image>
+					</view>
 					<input
 						type="password" 
 						:value="password" 
@@ -34,7 +38,9 @@
 				</view>
 				<view class="set-code">
 					<view class="input-item">
-						<view class="input-name yticon icon-shoucang"></view>
+						<view class="input-name">
+							<image src="../../static/img/code.png"></image>
+						</view>
 						<input
 							type="text" 
 							:value="code" 
@@ -95,20 +101,37 @@
 			},
 			toLogin(){
 				var that=this
-				console.log(that.username,that.password,that.code)
-				// if(!that.username || !that.password || !that.code) {
-				// 	that.$api.msg('信息需填写完整');
-				// 	return
-				// }
-				// if(that.code != that.identifyCode) {
-				// 	that.$api.msg('验证码错误');
-				// 	that.code = ''
-				// 	that.refreshCode()
-				// 	return
-				// }
-				uni.switchTab({
-					url:'/pages/index/index'
+				console.log(that.code,that.identifyCode)
+				if(that.username == ''){
+				   	that.$api.msg('请输入账号！');
+					return;
+				}
+				if(that.password == ''){
+				   	that.$api.msg('请输入登录密码！');
+					return;
+				}
+				if(that.code == "") {
+					that.$api.msg('验证码错误');
+					that.code = ''
+					// that.refreshCode()
+					return
+				}
+				//登录
+				that.$api.ajax('/api/Report/login',"GET", {
+					username: that.username,
+					password: that.password,
+				}, function(res) {
+					console.log(res.data)
+
+					uni.switchTab({
+						url:'/pages/index/index'
+					})
+				},function(res){
+					
 				})
+				// uni.switchTab({
+				// 	url:'/pages/index/index'
+				// })
 			},
 			refreshCode() {
 				this.identifyCode = "";
@@ -169,13 +192,17 @@
 				}
 				.input-name{
 					position: absolute;
-					top:21rpx;
+					top:18rpx;
 					left:31rpx;
 					/* bottom: 21rpx; */
-					width: 35rpx;
+					width: 40rpx;
 					height: 40rpx;
 					color: #ccc;
 					font-size: 40rpx;
+					image{
+						width: 100%;
+						height: 100%;
+					}
 				}
 				.input-mima{
 					position: absolute;

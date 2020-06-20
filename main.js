@@ -4,7 +4,8 @@ import App from './App'
 import store from './store'
 import common from '@/common/common'
 
-const apiurl = 'http://taicangtpst.com';
+const apiurl = 'https://ccst.pfkweb.com';
+// const apiurl = 'http://192.168.2.112:82';
 
 Vue.config.productionTip = false
 
@@ -21,27 +22,41 @@ App.mpType = 'app'
  *  示例使用了uni.scss下的变量, 除变量外已尽量移除特有语法,可直接替换为其他预处理器使用
  */
 
-const ajax = (url,data,fun,fun1) => {
+const ajax = (url,method,data,fun,fun1) => {
+	uni.showLoading({
+		title:'加载中'
+	})
 	uni.request({
 		url: apiurl + url, 
+		method:method||"GET",
+		header:{
+			'Content-Type' : 'application/x-www-form-urlencoded;charset=UTF-8'
+		},
 		data: data,
 		success: (res) => {
-			if(res.data.Code == '000000'){
+			if(res.data.code == 0){
 				fun(res)
 			}else {
 				if(fun1){
 					fun1(res)
 				}
+				console.log(res.data.msg)
+				//#ifdef APP-PLUS
+					plus.nativeUI.toast(res.data.msg);
+				//#endif
 				uni.showToast({
-					title: res.data.Msg || '网络错误',
+					title: res.data.msg || '网络错误',
 					icon:"none",
-					duration: 1000
+					duration: 2000
 				});
 			}
 		},
-		fail() {
+		fail(res) {
+			//#ifdef APP-PLUS
+				plus.nativeUI.toast(res.data.msg);
+			//#endif
 			uni.showToast({
-				title: res.data.Msg || '网络错误',
+				title: res.data.msg || '网络错误',
 				icon:"none",
 				duration: 1000
 			});

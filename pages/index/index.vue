@@ -5,7 +5,7 @@
 		<view class="total">
 			<view class="title">入驻商户总数</view>
 			<view class="bottom">
-				<view class="text1">9745</view>
+				<view class="text1">{{zong_number}}</view>
 				<view class="text2">
 					<text>家</text>
 				</view>
@@ -24,15 +24,15 @@
 		<!-- 当天入住商户 -->
 		<view class="list">
 			<view class="title">当天入住商户</view>
-			<view class="list-item" v-for="item in 10" :key="item">
+			<view class="list-item" v-for="item in listdata" :key="item.id">
 				<view class="left">
-					<image class="img" src="../../static/logo.png"></image>
+					<image class="img" :src="$url_api+item.images"></image>
 					<view class="title">
-						白兔白有爱
+						{{item.shanghuname}}
 					</view>
 				</view>
 				<view class="right">
-					12:12
+					{{item.createtime}}
 				</view>
 			</view>
 		</view>
@@ -44,6 +44,9 @@
 	export default {
 		data() {
 			return {
+				page:1,
+				listdata:[],
+				zong_number:0,
 				canvaColumn:{},
 				serverData:[],
 				chartsdata:{
@@ -58,45 +61,65 @@
 						"data": [250,  376 , 432, 345, 112, 28],
 						"color": "#1890ff"
 						}]
-				},
-				data:{
-					"categories": ["2013", "2014", "2015", "2016", "2017", "2018"],
-					"series": [{
-					"name": "类别一",
-					"data": [35, 36, 31, 33, 13, 34]
-					}, {
-					"name": "类别二",
-					"data": [18, 27, 21, 24, 6, 28]
-					}, {
-					"name": "类别三",
-					"data": [18, 27, 21, 24, 6, 28]
-					}]
 				}
 			}
 		},
+		//上拉加载
+		onReachBottom() {
+				this.getReach()
+		},
 		onLoad() {
-			// this.getServerData();
-			this.showColumn("canvasColumn",this.chartsdata)
+			this.getServerData();
 			// this.touchPie()
 		},
 		methods: {
 			//获取数据
-			// getServerData(){
-			// 	var _self=this
-			// 	uni.request({
-			// 		url: 'https://www.easy-mock.com/mock/5cc586b64fc5576cba3d647b/uni-wx-charts/chartsdata2',
-			// 		data:{
-			// 		},
-			// 		success: function(res) {
-			// 			console.log(res.data.data)
-						
-			// 			_self.showColumn("canvasColumn",Column);
-			// 		},
-			// 		fail: () => {
-			// 			console.log("网络错误，小程序端请检查合法域名");
-			// 		},
-			// 	});
-			// },
+			getServerData(){
+				var that=this
+				that.$api.ajax('/api/Report/shtongji',"POST", {
+					page: that.page,
+					count: 20,
+				}, function(res) {
+					that.zong_number=res.data.data.zong_number
+					var listnum=res.data.data.listnum
+					console.log(listnum)
+					var max=[]
+					for(var i=0;i<7;i++){
+						max.push(listnum.max)
+					}
+					that.chartsdata={
+						"categories": listnum.listtime.reverse(),
+						"series": [{
+						"name": "目标值",
+						"data": max,
+						"color": "#F5F5F5",
+						"textColor":"#fff"
+						}, {
+						"name": "完成量",
+						"data": listnum.listcount.reverse(),
+						"color": "#1890ff"
+						}]
+					}
+					that.showColumn("canvasColumn",that.chartsdata)
+					that.listdata=res.data.data.listdata.data
+				},function(res){
+					
+				})
+			},
+			//加载更多数据
+			getReach(){
+				var that=this
+				that.page++
+				that.$api.ajax('/api/Report/shtongji',"POST", {
+					page: that.page,
+					count: 20,
+				}, function(res) {
+					console.log(res.data)
+					that.listdata=[...that.listdata,...res.data.data.listdata.data]
+				},function(res){
+					
+				})
+			},
 			showColumn(canvasId,chartData){
 				var _self=this
 				var cWidth=uni.upx2px(700)
@@ -159,35 +182,6 @@
 					}
 				}
 			});
-			 
-			
-				// this.canvaColumn=new uCharts({
-				// 	$this:this,
-				// 	canvasId: canvasId,
-				// 	type: 'column',
-				// 	legend:{show:true},
-				// 	fontSize:11,
-				// 	background:'#FFFFFF',
-				// 	pixelRatio:1,
-				// 	animation: true,
-				// 	categories: chartData.categories,
-				// 	series: chartData.series,
-				// 	xAxis: {
-				// 		disableGrid:true,
-				// 	},
-				// 	yAxis: {
-				// 		//disabled:true
-				// 	},
-				// 	dataLabel: true,
-				// 	width:cWidth,
-				// 	height:cHeight,
-				// 	extra: {
-				// 		column: {
-				// 			type:'stack',
-				// 			width: 20
-				// 		}
-				// 		}
-				// });
 			},
 			touchPie (e) {  
 				this.canvaColumn.showToolTip(e, {

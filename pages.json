@@ -25,18 +25,18 @@
     ],
 	"tabBar": {
 		"color": "#7a7e83",
-		"selectedColor": "#31C45C",
+		"selectedColor": "#1A74EF",
 		"backgroundColor": "#ffffff",
 		"list": [{
 			"pagePath": "pages/index/index",
 			"text": "商户统计",
-			"iconPath": "static/img/index01.png",
-			"selectedIconPath": "static/img/index02.png"
+			"iconPath": "static/img/tj2.png",
+			"selectedIconPath": "static/img/tj1.png"
 		},{
 			"pagePath": "pages/satisfaction/satisfaction",
 			"text": "满意度统计",
-			"iconPath": "static/img/shequ01.png",
-			"selectedIconPath": "static/img/shequ02.png"
+			"iconPath": "static/img/my2.png",
+			"selectedIconPath": "static/img/my1.png"
 		}]
 	},
 	"globalStyle": {

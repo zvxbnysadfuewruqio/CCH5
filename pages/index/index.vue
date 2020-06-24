@@ -1,6 +1,12 @@
 <template>
 	<!-- 商户统计 -->
 	<view class="index">
+		<view class="dizhi">
+			<picker class="picker"  @change="bindPickerChange" :value="index" :range="array">
+				<view class="p-item">{{array[index]}}</view>
+			</picker>
+			<view class="san"></view>
+		</view>
 		<!-- 入驻商户总数 -->
 		<view class="total">
 			<view class="title">入驻商户总数</view>
@@ -61,7 +67,10 @@
 						"data": [250,  376 , 432, 345, 112, 28],
 						"color": "#1890ff"
 						}]
-				}
+				},
+				array: ["全国"],
+				index: 0,
+				citys:[]
 			}
 		},
 		//上拉加载
@@ -69,14 +78,38 @@
 				this.getReach()
 		},
 		onLoad() {
-			this.getServerData();
-			// this.touchPie()
+			// this.getServerData();
+			this.getCitys()
 		},
 		methods: {
+			//选择省份
+			bindPickerChange: function(e) {
+					console.log('picker发送选择改变，携带值为', e.target.value)
+					this.index = e.target.value
+					this.getServerData()
+			},
+			getCitys(){
+				var that=this
+				that.$api.ajax('/api/Sijifank/city_contract',"POST", {
+				}, function(res) {
+					console.log(res.data.data)
+					var citys=[]
+					var data=res.data.data
+					data.forEach(item=>{
+						citys.push(item.name)
+					})
+					that.array=citys
+					that.citys=data
+					that.getServerData()
+				},function(res){
+					
+				})
+			},
 			//获取数据
 			getServerData(){
 				var that=this
 				that.$api.ajax('/api/Report/shtongji',"POST", {
+					chengshi:that.array[that.index],
 					page: that.page,
 					count: 20,
 				}, function(res) {
@@ -277,6 +310,26 @@ page{
 			font-size: 28rpx;
 			line-height:68rpx;
 			margin-right: 15rpx;
+		}
+	}
+	.dizhi{
+		background-color: #fff;
+		height: 80rpx;
+		width: 200rpx;
+		color: #131313;
+		font-size: 30rpx;
+		border-radius: 40rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: 20rpx;
+		.san{
+			margin-left: 10rpx;
+			width: 0;
+			height: 0;
+			border-left: 10rpx solid transparent;
+			border-right: 10rpx solid transparent;
+			border-top: 8rpx solid #000;
 		}
 	}
 	

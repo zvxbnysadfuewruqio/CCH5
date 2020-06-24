@@ -1,5 +1,11 @@
 <template>
 	<view class="satisfaction">
+		<view class="dizhi">
+			<picker class="picker"  @change="bindPickerChange1" :value="index1" :range="array1">
+				<view class="p-item">{{array1[index1]}}</view>
+			</picker>
+			<view class="san"></view>
+		</view>
 		<!-- 近7天入驻商户 -->
 		<view class="seven">
 			<view class="title">客户订单统计</view>
@@ -92,7 +98,10 @@
 						"data": [250,  376 , 432],
 						"color": "#1C78F1"
 						}],
-				}
+				},
+				array1: ["全国"],
+				index1: 0,
+				citys:[]
 			}
 		},
 		onLoad() {
@@ -102,12 +111,36 @@
 			that.yue=date .getMonth();
 			that.index=date .getMonth();
 			_self = this;
-			this.getServerData();
+			this.getCitys()
+			// this.getServerData();
 			// _self.showRing("canvasRing",this.chartData);
 			// this.showColumn("canvasColumn",this.chartsdata)
 			// this.showColumnH("canvasColumnH",this.chartsdataH)
 		},
 		methods: {
+			//选择省份
+			bindPickerChange1: function(e) {
+					console.log('picker发送选择改变，携带值为', e.target.value)
+					this.index1 = e.target.value
+					this.getServerData()
+			},
+			getCitys(){
+				var that=this
+				that.$api.ajax('/api/Sijifank/city_contract',"POST", {
+				}, function(res) {
+					console.log(res.data.data)
+					var citys=[]
+					var data=res.data.data
+					data.forEach(item=>{
+						citys.push(item.name)
+					})
+					that.array1=citys
+					that.citys=data
+					that.getServerData()
+				},function(res){
+					
+				})
+			},
 			//选择月份
 			bindPickerChange: function(e) {
 					console.log('picker发送选择改变，携带值为', e.target.value)
@@ -118,6 +151,7 @@
 			getServerData(){
 				var that=this
 				that.$api.ajax('/api/Report/fanktongji',"POST", {
+					chengshi:that.array1[that.index1],
 					yue: that.yue+1+"",
 					year: that.year+'',
 				}, function(res) {
@@ -432,6 +466,25 @@ page{
 			}
 		}
 	}
-	
+	.dizhi{
+		background-color: #fff;
+		height: 80rpx;
+		width: 200rpx;
+		color: #131313;
+		font-size: 30rpx;
+		border-radius: 40rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: 20rpx;
+		.san{
+			margin-left: 10rpx;
+			width: 0;
+			height: 0;
+			border-left: 10rpx solid transparent;
+			border-right: 10rpx solid transparent;
+			border-top: 8rpx solid #000;
+		}
+	}
 }
 </style>

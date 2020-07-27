@@ -4,8 +4,8 @@ import App from './App'
 import store from './store'
 import common from '@/common/common'
 
-const apiurl = 'https://ccst.pfkweb.com';
-// const apiurl = 'http://192.168.2.112:82';
+// const apiurl = 'https://ccst.pfkweb.com';
+const apiurl = 'https://congcongxin.com';
 
 Vue.config.productionTip = false
 
